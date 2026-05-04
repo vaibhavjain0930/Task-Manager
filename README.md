@@ -39,7 +39,7 @@ Backend: `backend/.env`
 PORT=3000
 MONGO_URL=mongodb://127.0.0.1:27017/task-manager
 JWT_SECRET=replace-with-a-long-random-secret
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URLS=http://localhost:5173
 ```
 
 Frontend: `frontend/.env`
@@ -105,27 +105,73 @@ Member users can:
 
 When an admin creates or updates a task with a project and assigned member, the member is automatically added to that project. The member can then see the project in the Projects section with the assigning admin shown on the project card.
 
-## Deployment Notes
+## Deploy Backend On Render
 
-Set environment variables in your hosting platform instead of committing `.env` files.
+Create a new Render Web Service and point it to this repository.
 
-Backend deployment variables:
+Use these settings:
 
-- `PORT`
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `npm start`
+
+Set these Render environment variables:
+
+```env
+MONGO_URL=mongodb+srv://username:password@cluster-name.mongodb.net/task-manager
+JWT_SECRET=replace-with-a-long-random-secret
+FRONTEND_URLS=https://your-vercel-app.vercel.app
+```
+
+Render provides `PORT` automatically, so you do not need to set it there.
+
+After deployment, copy your Render backend URL. It will look like:
+
+```text
+https://your-render-service.onrender.com
+```
+
+## Deploy Frontend On Vercel
+
+Create a new Vercel project and point it to this repository.
+
+Use these settings:
+
+- Root Directory: `frontend`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+
+Set this Vercel environment variable:
+
+```env
+VITE_API_BASE_URL=https://your-render-service.onrender.com
+```
+
+After Vercel deploys, copy your Vercel frontend URL and add it to Render:
+
+```env
+FRONTEND_URLS=https://your-vercel-app.vercel.app
+```
+
+If you want to allow local frontend and deployed frontend at the same time, separate them with commas:
+
+```env
+FRONTEND_URLS=http://localhost:5173,https://your-vercel-app.vercel.app
+```
+
+## Deployment Variables
+
+Backend variables:
+
 - `MONGO_URL`
 - `JWT_SECRET`
-- `FRONTEND_URL`
+- `FRONTEND_URLS`
 
 Frontend deployment variables:
 
 - `VITE_API_BASE_URL`
 
-For production, set:
-
-- `FRONTEND_URL` to your deployed frontend URL
-- `VITE_API_BASE_URL` to your deployed backend URL
-- `JWT_SECRET` to a strong private value
-- `MONGO_URL` to your production MongoDB connection string
+Do not commit real `.env` files. Add these values only in Render and Vercel dashboards.
 
 ## Useful Commands
 

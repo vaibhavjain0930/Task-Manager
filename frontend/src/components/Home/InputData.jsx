@@ -95,9 +95,9 @@ const InputData = ({
         className={`w-full h-screen bg-gray-800 top-0 left-0 opacity-[70%] ${InputDiv} `}
       ></div>
       <div
-        className={`w-full h-screen flex items-center justify-center top-0 left-0 ${InputDiv} `}
+        className={`w-full h-screen flex items-center justify-center top-0 left-0 ${InputDiv} px-4`}
       >
-        <div className="w-[35%] bg-gray-800 h-[90%] rounded border border-gray-500 py-8 px-10 flex justify-between flex-col relative">
+        <div className="w-full sm:w-[80%] md:w-[55%] lg:w-[35%] bg-gray-800 h-[90%] rounded border border-gray-500 py-8 px-6 md:px-10 flex justify-between flex-col relative overflow-y-auto">
           <button
             onClick={() => {
               setInputDiv("hidden");

@@ -35,7 +35,7 @@ function App() {
   }, [dispatch, isLoggedIn, location.pathname, navigate]);
   return (
     <>
-      <div className="text-white bg-gray-900 w-full h-screen p-2 relative">
+      <div className="text-white bg-gray-900 w-full min-h-screen p-2 relative">
         <Routes>
           {/* these are the nested roots  */}
           <Route exact path="/" element={<Home />}>

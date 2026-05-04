@@ -22,11 +22,11 @@ const Team = () => {
           {Users.map((user) => (
             <div
               key={user._id}
-              className="grid grid-cols-3 border-b border-gray-700 bg-gray-800 p-4 last:border-b-0"
+              className="flex flex-col sm:grid sm:grid-cols-3 border-b border-gray-700 bg-gray-800 p-4 last:border-b-0 gap-1 sm:gap-0"
             >
               <span className="font-semibold">{user.username}</span>
-              <span className="text-gray-400">{user.email}</span>
-              <span className="text-right uppercase text-gray-300">{user.role}</span>
+              <span className="text-gray-400 text-sm sm:text-base">{user.email}</span>
+              <span className="sm:text-right uppercase text-gray-300 text-xs sm:text-base">{user.role}</span>
             </div>
           ))}
         </div>

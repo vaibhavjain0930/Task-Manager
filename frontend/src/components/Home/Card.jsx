@@ -67,9 +67,9 @@ const Card = ({ home, setInputDiv, data, setUpdated, onTaskChanged }) => {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {(!data || data.length === 0) && (
-        <div className="col-span-3 rounded border border-gray-700 bg-gray-800 p-8 text-center text-gray-400">
+        <div className="col-span-full rounded border border-gray-700 bg-gray-800 p-8 text-center text-gray-400">
           No data
         </div>
       )}
@@ -77,7 +77,7 @@ const Card = ({ home, setInputDiv, data, setUpdated, onTaskChanged }) => {
         data.map((item, key) => (
           <div
             key={key}
-            className="border-[1.5px] border-gray-900 bg-gray-800  rounded p-3 hover:bg-gray-700 duration-300 transition-all hover:scale-105 hover:border-gray-500 flex flex-col justify-between"
+            className="border-[1.5px] border-gray-900 bg-gray-800 rounded p-3 hover:bg-gray-700 duration-300 transition-all hover:scale-105 hover:border-gray-500 flex flex-col justify-between"
           >
             <div>
               <h1 className="text-xl font-semibold">{item.title}</h1>
@@ -100,9 +100,9 @@ const Card = ({ home, setInputDiv, data, setUpdated, onTaskChanged }) => {
                 )}
               </div>
             </div>
-            <div className="flex items-center mt-4">
+            <div className="flex flex-wrap items-center mt-4 gap-2">
               <button
-                className={`px-4 py-1 rounded w-3/6 ${
+                className={`px-3 py-1 rounded flex-1 min-w-[90px] ${
                   item.complete === false ? "bg-red-400" : "bg-green-600"
                 }`}
                 onClick={() => handleCompleteTask(item._id)}
@@ -110,7 +110,7 @@ const Card = ({ home, setInputDiv, data, setUpdated, onTaskChanged }) => {
                 {item.complete === true ? "Completed" : "In-Complete"}
               </button>
               <select
-                className="mx-2 w-3/6 rounded bg-gray-900 px-2 py-1 text-sm text-gray-200"
+                className="flex-1 min-w-[100px] rounded bg-gray-900 px-2 py-1 text-sm text-gray-200"
                 value={item.status || (item.complete ? "completed" : "todo")}
                 onChange={(e) => handleStatusChange(item._id, e.target.value)}
               >
@@ -118,7 +118,7 @@ const Card = ({ home, setInputDiv, data, setUpdated, onTaskChanged }) => {
                 <option value="in-progress">In progress</option>
                 <option value="completed">Completed</option>
               </select>
-              <div className="w-3/6 text-xl flex justify-around text-gray-500">
+              <div className="flex gap-3 text-xl text-gray-500">
                 {isAdmin && (
                   <button
                     className="hover:text-gray-200 duration-200 transition-all text-[1.6rem]"
@@ -159,7 +159,7 @@ const Card = ({ home, setInputDiv, data, setUpdated, onTaskChanged }) => {
           onClick={() => {
             setInputDiv("fixed");
           }}
-          className="border-[1.5px] border-gray-900 bg-gray-800  rounded p-3 hover:bg-gray-700 duration-300 transition-all hover:scale-105 hover:border-gray-500 flex flex-col justify-center items-center text-gray-500 cursor-pointer hover:text-white"
+          className="border-[1.5px] border-gray-900 bg-gray-800 rounded p-3 hover:bg-gray-700 duration-300 transition-all hover:scale-105 hover:border-gray-500 flex flex-col justify-center items-center text-gray-500 cursor-pointer hover:text-white"
         >
           <IoAddCircle className="text-5xl" />
           <h2 className="text-xl font-semibold uppercase">Add Task</h2>

@@ -42,7 +42,7 @@ const Projects = () => {
         Projects
       </h1>
       {role === "admin" && (
-        <div className="mb-6 grid grid-cols-[1fr_2fr_auto] gap-3 px-4">
+        <div className="mb-6 flex flex-col sm:grid sm:grid-cols-[1fr_2fr_auto] gap-3 px-4">
           <input
             className="rounded border border-gray-600 bg-transparent px-3 py-2 outline-none focus:border-blue-500"
             placeholder="Project name"
@@ -69,7 +69,7 @@ const Projects = () => {
           {role === "admin" ? "No projects created" : "No project assigned"}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
           {Projects.map((project) => (
             <div
               key={project._id}

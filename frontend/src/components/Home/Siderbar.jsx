@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import ProfileImage from "../../assets/profile.avif";
 import { api } from "../../utils/api";
 
-const Siderbar = () => {
+const Siderbar = ({ onNavigate }) => {
   const role = useSelector((state) => state.auth.role);
   const data = [
     {
@@ -100,6 +100,7 @@ const Siderbar = () => {
             className="my-2 cursor-pointer flex items-center gap-2 hover:bg-gray-700 p-2 rounded transition-all duration-300 hover:pl-4"
             key={i}
             to={item.link}
+            onClick={onNavigate}
           >
             {item.icon}
             {item.title}

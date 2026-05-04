@@ -49,14 +49,14 @@ const Signup = () => {
   };
 
   return (
-    <div className="h-[98vh] flex items-center justify-center">
-      <div className="w-[80%] h-[75%] flex">
-        <div className="w-1/2 ">
+    <div className="min-h-[98vh] flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-4xl flex flex-col md:flex-row md:h-[75%] rounded overflow-hidden shadow-xl">
+        <div className="hidden md:block md:w-1/2">
           <img src={SignupImage} className="object-cover w-[90%] h-[100%]" />
         </div>
-        <div className="w-1/2 bg-slate-800 p-8 rounded flex flex-col justify-center items-start gap-10">
+        <div className="w-full md:w-1/2 bg-slate-800 p-8 rounded flex flex-col justify-center items-start gap-8">
           <h1 className="text-2xl font-bold uppercase">Sign-Up</h1>
-          <div>
+          <div className="w-full">
             <input
               type="text"
               className="px-3 py-2 rounded bg-transparent border border-gray-500 w-full focus:border-blue-500 transition-all mb-6 duration-300 outline-none"
@@ -67,7 +67,7 @@ const Signup = () => {
             />
             <select
               name="role"
-              className="px-3 py-2 rounded bg-slate-800 border border-gray-500 w-full focus:border-blue-500 transition-all duration-300 outline-none mt-6"
+              className="px-3 py-2 rounded bg-slate-800 border border-gray-500 w-full focus:border-blue-500 transition-all duration-300 outline-none mb-6"
               value={Data.role}
               onChange={change}
             >
@@ -91,9 +91,9 @@ const Signup = () => {
               onChange={change}
             />
           </div>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 w-full">
             <button
-              className="px-4 py-2 bg-slate-500 rounded w-52 text-lg font-semibold hover:bg-blue-500 duration-300 transition-all"
+              className="px-4 py-2 bg-slate-500 rounded w-full sm:w-52 text-lg font-semibold hover:bg-blue-500 duration-300 transition-all"
               onClick={submit}
             >
               Sign Up

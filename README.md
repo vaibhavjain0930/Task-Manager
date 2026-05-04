@@ -39,7 +39,6 @@ Backend: `backend/.env`
 PORT=3000
 MONGO_URL=mongodb://127.0.0.1:27017/task-manager
 JWT_SECRET=replace-with-a-long-random-secret
-FRONTEND_URLS=http://localhost:5173
 ```
 
 Frontend: `frontend/.env`
@@ -120,10 +119,9 @@ Set these Render environment variables:
 ```env
 MONGO_URL=mongodb+srv://username:password@cluster-name.mongodb.net/task-manager
 JWT_SECRET=replace-with-a-long-random-secret
-FRONTEND_URLS=https://your-vercel-app.vercel.app
 ```
 
-Render provides `PORT` automatically, so you do not need to set it there.
+Render provides `PORT` automatically, so you do not need to set it there. The backend uses open CORS, so you do not need to add your Vercel frontend URL to Render.
 
 After deployment, copy your Render backend URL. It will look like:
 
@@ -147,17 +145,7 @@ Set this Vercel environment variable:
 VITE_API_BASE_URL=https://your-render-service.onrender.com
 ```
 
-After Vercel deploys, copy your Vercel frontend URL and add it to Render:
-
-```env
-FRONTEND_URLS=https://your-vercel-app.vercel.app
-```
-
-If you want to allow local frontend and deployed frontend at the same time, separate them with commas:
-
-```env
-FRONTEND_URLS=http://localhost:5173,https://your-vercel-app.vercel.app
-```
+This is the only frontend-to-backend connection setting needed for Vercel.
 
 ## Deployment Variables
 
@@ -165,7 +153,6 @@ Backend variables:
 
 - `MONGO_URL`
 - `JWT_SECRET`
-- `FRONTEND_URLS`
 
 Frontend deployment variables:
 

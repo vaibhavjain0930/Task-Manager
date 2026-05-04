@@ -1,8 +1,8 @@
 import Card from "../components/Home/Card";
 import InputData from "../components/Home/InputData";
 import NavBar from "../components/Home/NavBar";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import { api } from "../utils/api";
 
 const Alltasks = () => {
   const [InputDiv, setInputDiv] = useState("hidden");
@@ -11,21 +11,14 @@ const Alltasks = () => {
 
   const [Updated, setUpdated] = useState({ id: "", title: "", desc: "" });
 
-  const headers = {
-    id: localStorage.getItem("id"),
-    authorization: `Bearer ${localStorage.getItem("token")}`,
-  };
+  const fetchTasks = useCallback(async () => {
+    const response = await api.get("/api/v2/alltasks");
+    setData(response.data.data);
+  }, []);
 
   useEffect(() => {
-    const fetch = async () => {
-      const response = await axios.get(
-        "http://localhost:3000/api/v2/alltasks",
-        { headers }
-      );
-      setData(response.data.data);
-    };
-    fetch();
-  });
+    fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <>
@@ -37,6 +30,7 @@ const Alltasks = () => {
             setInputDiv={setInputDiv}
             data={Data.tasks}
             setUpdated={setUpdated}
+            onTaskChanged={fetchTasks}
           />
         )}
       </div>
@@ -45,6 +39,7 @@ const Alltasks = () => {
         setInputDiv={setInputDiv}
         Updated={Updated}
         setUpdated={setUpdated}
+        onTaskSaved={fetchTasks}
       />
     </>
   );

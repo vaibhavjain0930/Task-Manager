@@ -1,19 +1,27 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SignupImage from "../assets/signUp.webp";
-import axios from "axios";
 import { useSelector } from "react-redux";
+import { api } from "../utils/api";
 
 const Signup = () => {
   const history = useNavigate();
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const role = useSelector((state) => state.auth.role);
 
-  if (isLoggedIn === true) {
-    history("/");
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      history(role === "admin" ? "/dashboard" : "/");
+    }
+  }, [history, isLoggedIn, role]);
 
-  const [Data, setData] = useState({ username: "", email: "", password: "" });
+  const [Data, setData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    role: "member",
+  });
 
   const change = (e) => {
     const { name, value } = e.target;
@@ -25,20 +33,17 @@ const Signup = () => {
       alert("All Fields are required!");
     } else {
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/v1/sign-in",
-          Data
-        );
+        const response = await api.post("/api/v1/sign-in", Data);
         if (response.status === 200) {
-          setData({ username: "", email: "", password: "" });
+          localStorage.setItem("lastSignupRole", Data.role);
+          setData({ username: "", email: "", password: "", role: "member" });
           console.log("Sign-in successful", response.data);
-          history("/login");
+          history("/login", { state: { role: Data.role } });
         } else {
           console.log("Unexpected response", response);
         }
       } catch (error) {
-        alert("Error during sign-in", error.response.data.message);
-        alert("An error occurred during sign-in. Please try again.");
+        alert(error.response?.data?.message || "An error occurred during sign-up. Please try again.");
       }
     }
   };
@@ -60,6 +65,15 @@ const Signup = () => {
               value={Data.username}
               onChange={change}
             />
+            <select
+              name="role"
+              className="px-3 py-2 rounded bg-slate-800 border border-gray-500 w-full focus:border-blue-500 transition-all duration-300 outline-none mt-6"
+              value={Data.role}
+              onChange={change}
+            >
+              <option value="member">Member</option>
+              <option value="admin">Admin</option>
+            </select>
             <input
               type="email"
               className="px-3 py-2 rounded bg-transparent border border-gray-500 w-full focus:border-blue-500 transition-all duration-300 outline-none mb-6"

@@ -1,19 +1,57 @@
+/* eslint-disable react/prop-types */
 import { RxCross2 } from "react-icons/rx";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { api } from "../../utils/api";
 
-// eslint-disable-next-line react/prop-types
-const InputData = ({ InputDiv, setInputDiv, Updated, setUpdated }) => {
-  const [Data, setData] = useState({ title: "", desc: "" });
+const emptyTaskForm = {
+  title: "",
+  desc: "",
+  assignedTo: "",
+  project: "",
+  status: "todo",
+  dueDate: "",
+};
+
+const InputData = ({
+  InputDiv,
+  setInputDiv,
+  Updated,
+  setUpdated,
+  onTaskSaved,
+}) => {
+  const [Data, setData] = useState({
+    ...emptyTaskForm,
+  });
+  const [Users, setUsers] = useState([]);
+  const [Projects, setProjects] = useState([]);
 
   useEffect(() => {
-    setData({ title: Updated.title, desc: Updated.desc });
+    setData((prev) => ({
+      ...prev,
+      title: Updated.title || "",
+      desc: Updated.desc || "",
+      assignedTo: Updated.assignedTo || "",
+      project: Updated.project || "",
+      status: Updated.status || "todo",
+      dueDate: Updated.dueDate || "",
+    }));
   }, [Updated]);
 
-  const headers = {
-    id: localStorage.getItem("id"),
-    authorization: `Bearer ${localStorage.getItem("token")}`,
-  };
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      try {
+        const [usersResponse, projectsResponse] = await Promise.all([
+          api.get("/api/v1/users"),
+          api.get("/api/v3/projects"),
+        ]);
+        setUsers(usersResponse.data.data.filter((user) => user.role === "member"));
+        setProjects(projectsResponse.data.data);
+      } catch (error) {
+        console.log(error.response?.data?.message || "Admin data unavailable");
+      }
+    };
+    fetchAdminData();
+  }, []);
 
   const change = (e) => {
     const { name, value } = e.target;
@@ -21,31 +59,33 @@ const InputData = ({ InputDiv, setInputDiv, Updated, setUpdated }) => {
   };
 
   const handleCreateTask = async () => {
-    if (Data.title === "" || Data.desc === "") {
-      alert("All fields are required!");
+    if (Data.title === "" || Data.desc === "" || Data.assignedTo === "") {
+      alert("Title, description, and assigned member are required!");
     } else {
-      const reponse = await axios.post(
-        "http://localhost:3000/api/v2/create",
-        Data,
-        { headers }
-      );
-      setData({ title: "", desc: "" });
-      setInputDiv("hidden");
+      try {
+        await api.post("/api/v2/create", Data);
+        setData({ ...emptyTaskForm });
+        setInputDiv("hidden");
+        onTaskSaved?.();
+      } catch (error) {
+        alert(error.response?.data?.message || "Unable to create task");
+      }
     }
   };
 
   const handleUpdatedTask = async () => {
-    if (Data.title === "" || Data.desc === "") {
-      alert("All fields are required!");
+    if (Data.title === "" || Data.desc === "" || Data.assignedTo === "") {
+      alert("Title, description, and assigned member are required!");
     } else {
-      const reponse = await axios.put(
-        `http://localhost:3000/api/v2/update/${Updated.id}`,
-        Data,
-        { headers }
-      );
-      setUpdated({ id: "", title: "", desc: "" });
-      setData({ title: "", desc: "" });
-      setInputDiv("hidden");
+      try {
+        await api.put(`/api/v2/update/${Updated.id}`, Data);
+        setUpdated({ id: "", title: "", desc: "" });
+        setData({ ...emptyTaskForm });
+        setInputDiv("hidden");
+        onTaskSaved?.();
+      } catch (error) {
+        alert(error.response?.data?.message || "Unable to update task");
+      }
     }
   };
 
@@ -61,7 +101,7 @@ const InputData = ({ InputDiv, setInputDiv, Updated, setUpdated }) => {
           <button
             onClick={() => {
               setInputDiv("hidden");
-              setData({ title: "", desc: "" });
+              setData({ ...emptyTaskForm });
               setUpdated({ id: "", title: "", desc: "" });
             }}
             className="absolute right-8 top-6 "
@@ -82,10 +122,55 @@ const InputData = ({ InputDiv, setInputDiv, Updated, setUpdated }) => {
           <textarea
             name="desc"
             placeholder="Description..."
-            className="px-3 py-2 rounded bg-transparent border border-gray-500 w-full h-[60%] resize-none focus:border-blue-500 outline-none transition-all duration-300"
+            className="px-3 py-2 rounded bg-transparent border border-gray-500 w-full h-[28%] resize-none focus:border-blue-500 outline-none transition-all duration-300"
             value={Data.desc}
             onChange={change}
           ></textarea>
+          <select
+            name="assignedTo"
+            className="px-3 py-2 rounded bg-gray-900 border border-gray-500 w-full focus:border-blue-500 outline-none transition-all duration-300"
+            value={Data.assignedTo}
+            onChange={change}
+          >
+            <option value="">Assign to member</option>
+            {Users.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.username} ({user.role})
+              </option>
+            ))}
+          </select>
+          <select
+            name="project"
+            className="px-3 py-2 rounded bg-gray-900 border border-gray-500 w-full focus:border-blue-500 outline-none transition-all duration-300"
+            value={Data.project}
+            onChange={change}
+          >
+            <option value="">No project</option>
+            {Projects.map((project) => (
+              <option key={project._id} value={project._id}>
+                {project.name}
+              </option>
+            ))}
+          </select>
+          <div className="flex gap-3">
+            <select
+              name="status"
+              className="px-3 py-2 rounded bg-gray-900 border border-gray-500 w-1/2 focus:border-blue-500 outline-none transition-all duration-300"
+              value={Data.status}
+              onChange={change}
+            >
+              <option value="todo">To do</option>
+              <option value="in-progress">In progress</option>
+              <option value="completed">Completed</option>
+            </select>
+            <input
+              type="date"
+              name="dueDate"
+              className="px-3 py-2 rounded bg-transparent border border-gray-500 w-1/2 focus:border-blue-500 transition-all duration-300 outline-none"
+              value={Data.dueDate}
+              onChange={change}
+            />
+          </div>
           {Updated.id === "" ? (
             <button
               className="px-3 py-2 bg-gray-500 text-xl font-semibold rounded hover:bg-green-600 duration-300 transition-all"

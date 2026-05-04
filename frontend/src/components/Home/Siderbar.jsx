@@ -2,15 +2,27 @@ import { CgNotes } from "react-icons/cg";
 import { MdLabelImportantOutline } from "react-icons/md";
 import { FaCheckDouble } from "react-icons/fa";
 import { TbNotesOff } from "react-icons/tb";
+import { MdDashboard, MdGroups, MdWorkspaces } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authAction } from "../../store/auth";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ProfileImage from "../../assets/profile.avif";
+import { api } from "../../utils/api";
 
 const Siderbar = () => {
+  const role = useSelector((state) => state.auth.role);
   const data = [
+    {
+      title: "Dashboard",
+      icon: <MdDashboard />,
+      link: "/dashboard",
+    },
+    {
+      title: "Projects",
+      icon: <MdWorkspaces />,
+      link: "/projects",
+    },
     {
       title: "All tasks",
       icon: <CgNotes />,
@@ -33,28 +45,30 @@ const Siderbar = () => {
     },
   ];
 
+  if (role === "admin") {
+    data.push({
+      title: "Team",
+      icon: <MdGroups />,
+      link: "/team",
+    });
+  }
+
   const dispatch = useDispatch();
   const history = useNavigate();
   const logout = () => {
     dispatch(authAction.logout());
-    localStorage.clear("id");
-    localStorage.clear("token");
+    localStorage.removeItem("id");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
     history("/login");
   };
 
   const [Data, setData] = useState();
 
-  const headers = {
-    id: localStorage.getItem("id"),
-    authorization: `Bearer ${localStorage.getItem("token")}`,
-  };
-
   useEffect(() => {
     const fetch = async () => {
-      const response = await axios.get(
-        "http://localhost:3000/api/v2/alltasks",
-        { headers }
-      );
+      const response = await api.get("/api/v2/alltasks");
       setData(response.data.data);
     };
 
@@ -74,12 +88,14 @@ const Siderbar = () => {
           </div>
           <h2 className="text-xl font-semibold">{Data.username}</h2>
           <h4 className="mb-1 text-gray-400">{Data.email}</h4>
+          <span className="mb-4 rounded bg-gray-700 px-3 py-1 text-xs uppercase text-gray-300">
+            {Data.role}
+          </span>
           <hr />
         </div>
       )}
       <div>
         {data.map((item, i) => (
-          // eslint-disable-next-line react/jsx-key
           <Link
             className="my-2 cursor-pointer flex items-center gap-2 hover:bg-gray-700 p-2 rounded transition-all duration-300 hover:pl-4"
             key={i}

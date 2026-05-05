@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { CgNotes } from "react-icons/cg";
 import { MdLabelImportantOutline } from "react-icons/md";
 import { FaCheckDouble } from "react-icons/fa";

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { RxCross2 } from "react-icons/rx";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { api } from "../../utils/api";
 
 const emptyTaskForm = {
@@ -19,6 +20,8 @@ const InputData = ({
   setUpdated,
   onTaskSaved,
 }) => {
+  const role = useSelector((state) => state.auth.role);
+  const isAdmin = role === "admin";
   const [Data, setData] = useState({
     ...emptyTaskForm,
   });
@@ -38,6 +41,8 @@ const InputData = ({
   }, [Updated]);
 
   useEffect(() => {
+    if (!isAdmin) return;
+
     const fetchAdminData = async () => {
       try {
         const [usersResponse, projectsResponse] = await Promise.all([
@@ -51,7 +56,7 @@ const InputData = ({
       }
     };
     fetchAdminData();
-  }, []);
+  }, [isAdmin]);
 
   const change = (e) => {
     const { name, value } = e.target;
@@ -59,6 +64,11 @@ const InputData = ({
   };
 
   const handleCreateTask = async () => {
+    if (!isAdmin) {
+      alert("Members can only update task status.");
+      return;
+    }
+
     if (Data.title === "" || Data.desc === "" || Data.assignedTo === "") {
       alert("Title, description, and assigned member are required!");
     } else {
@@ -74,6 +84,11 @@ const InputData = ({
   };
 
   const handleUpdatedTask = async () => {
+    if (!isAdmin) {
+      alert("Members can only update task status.");
+      return;
+    }
+
     if (Data.title === "" || Data.desc === "" || Data.assignedTo === "") {
       alert("Title, description, and assigned member are required!");
     } else {
